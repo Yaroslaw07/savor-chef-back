@@ -12,7 +12,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors(options =>  
+{  
+    options.AddPolicy(name: "CustomOrigins",  
+        policy  =>  
+        {  
+            policy.WithOrigins("http://localhost:3000", "https://localhost:3000");
+        });  
+});
 builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
 builder.Services.AddSingleton<IJWTService, JWTService>();
 //scoped transient
@@ -41,11 +48,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseRouting();
+app.UseCors("CustomOrigins");
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
