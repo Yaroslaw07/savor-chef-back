@@ -3,9 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SavorChef.Backend.Repositories;
 using SavorChef.Backend.Services;
+using Microsoft.EntityFrameworkCore;
+using SavorChef.Backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddDbContext<ApiContext>
+    (opt => opt.UseInMemoryDatabase("RecipeDb"));   
 // Add services to the container.
 
 builder.Services.AddControllers();
