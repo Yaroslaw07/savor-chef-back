@@ -19,11 +19,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>  
 {  
-    options.AddPolicy(name: "CustomOrigins",  
+    options.AddPolicy(name: "LocalCors",  
         policy  =>  
         {  
-            policy.WithOrigins("http://localhost:3000", "https://localhost:3000");
+            policy
+                .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });  
+    // options.AddPolicy(name: "ProductionCors",  
+    //     policy  =>  
+    //     {  
+    //         policy
+    //             .WithOrigins("https://production-website.com")
+    //             .AllowAnyHeader()
+    //             .AllowAnyMethod();
+    //     });  
 });
 builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
 builder.Services.AddSingleton<IJWTService, JWTService>();
@@ -53,12 +64,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
 app.UseRouting();
-app.UseCors("CustomOrigins");
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("LocalCors");
+}
+else
+{
+    // app.UseCors("ProductionCors");
+}
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
-

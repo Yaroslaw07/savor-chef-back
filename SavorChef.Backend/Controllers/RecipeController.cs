@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SavorChef.Backend.Models;
 using SavorChef.Backend.Data;
+using SavorChef.Backend.Data.Dtos;
+using SavorChef.Backend.Data.Entities;
 
 namespace SavorChef.Backend.Controllers
 {
@@ -20,24 +21,24 @@ namespace SavorChef.Backend.Controllers
             _context = context;
         }
 
-        ///Create/Edit
+        //Create
         [HttpPost]
-        public IActionResult CreateEdit(Recipe recipe)
+        public IActionResult Create(RecipeCreateRequestDto recipeCreateRequestDto)
         {
-            if (recipe.Id == 0)
-            {
-                _context.Recipes.Add(recipe);
-            }
-            else
-            {
-                var resipeInDb = _context.Recipes.Find(recipe.Id);
 
-                if (resipeInDb == null)
-                    return new NotFoundResult();
-            }
-
+            var recipeEntity = _context.Recipes.Add(new RecipeEntity
+            {
+                Name = recipeCreateRequestDto.Name,
+                Ingredients = recipeCreateRequestDto.Ingredients,
+                RecipeDescription = recipeCreateRequestDto.RecipeDescription,
+                PreparationInstructions = recipeCreateRequestDto.PreparationInstructions,
+                PreparationTime = recipeCreateRequestDto.PreparationTime,
+                Difficulty = recipeCreateRequestDto.Difficulty,
+                DishCategory = recipeCreateRequestDto.DishCategory
+            });
+            
             _context.SaveChanges();
-            return new OkObjectResult(recipe);
+            return new OkObjectResult(recipeEntity.Entity);
         }
         
         //GET
