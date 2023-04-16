@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<ApiContext>
-    (opt => opt.UseInMemoryDatabase("RecipeDb"));   
+    (opt => opt.UseNpgsql(builder.Configuration["ConnectionStrings:Postgres"]));   
 // Add services to the container.
 
 builder.Services.AddControllers();
