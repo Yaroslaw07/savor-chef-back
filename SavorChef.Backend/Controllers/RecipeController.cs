@@ -25,6 +25,15 @@ namespace SavorChef.Backend.Controllers
         [HttpPost]
         public IActionResult Create(RecipeCreateRequestDto recipeCreateRequestDto)
         {
+            var productEntities = new List<ProductEntity>();
+
+
+            foreach (var productId in recipeCreateRequestDto.AssociatedProductIds)
+            {
+                var productEntity = _context.Products.FirstOrDefault(x => x.Id == productId);
+                if(productEntity!=null)
+                    productEntities.Add(productEntity);
+            }
 
             var recipeEntity = _context.Recipes.Add(new RecipeEntity
             {
@@ -34,11 +43,30 @@ namespace SavorChef.Backend.Controllers
                 PreparationInstructions = recipeCreateRequestDto.PreparationInstructions,
                 PreparationTime = recipeCreateRequestDto.PreparationTime,
                 Difficulty = recipeCreateRequestDto.Difficulty,
-                DishCategory = recipeCreateRequestDto.DishCategory
+                DishCategory = recipeCreateRequestDto.DishCategory,
+                AssociatedProducts = productEntities
             });
             
             _context.SaveChanges();
-            return new OkObjectResult(recipeEntity.Entity);
+            var responseDto = new RecipeResponseDto
+            {
+                Id = recipeEntity.Entity.Id,
+                Name = recipeEntity.Entity.Name,
+                Ingredients = recipeEntity.Entity.Ingredients,
+                RecipeDescription = recipeEntity.Entity.RecipeDescription,
+                PreparationInstructions = recipeEntity.Entity.PreparationInstructions,
+                PreparationTime = recipeEntity.Entity.PreparationTime,
+                Difficulty = recipeEntity.Entity.Difficulty,
+                DishCategory = recipeEntity.Entity.DishCategory,
+                Products = recipeEntity.Entity.AssociatedProducts.Select(x => new ProductResponseDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description
+                }).ToList()
+
+            };
+            return new OkObjectResult(responseDto);
         }
         
         //GET

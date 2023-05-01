@@ -12,9 +12,6 @@ public class RecipeCreateRequestDto
     public string PreparationTime { get; set; }=string.Empty;
     public string Difficulty { get; set; }=string.Empty;
     public string DishCategory { get; set; }=string.Empty;
-    // Add a foreign key for the ProductEntity.
-    public int ProductEntityId { get; set; }
-
-    // Add a navigation property for the associated ProductEntity.
-    public ProductEntity AssociatedProduct { get; set; }
+    
+    public List<int> AssociatedProductIds { get; set; } = new();  
 }

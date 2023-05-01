@@ -16,4 +16,15 @@ public class ApiContext: DbContext
 
     }
 
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<RecipeEntity>()
+            .HasMany(x => x.AssociatedProducts)
+            .WithMany(x => x.AssociatedRecipes);
+        
+        modelBuilder.Entity<ProductEntity>()
+            .HasMany(x => x.AssociatedRecipes)
+            .WithMany(x => x.AssociatedProducts);
+    }
 }   
