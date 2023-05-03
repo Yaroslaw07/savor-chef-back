@@ -20,4 +20,11 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.28.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\interfase\Controllers" />
+      <Folder Include="Areas\interfase\Data" />
+      <Folder Include="Areas\interfase\Models" />
+      <Folder Include="Areas\interfase\Views" />
+    </ItemGroup>
+
 </Project>
