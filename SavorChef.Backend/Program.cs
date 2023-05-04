@@ -1,22 +1,24 @@
-using System.Text;
+ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SavorChef.Backend.Repositories;
 using SavorChef.Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using SavorChef.Backend.Data;
+ using SavorChef.Backend.Hash;
 
-var builder = WebApplication.CreateBuilder(args);
+ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<ApiContext>
     (opt => opt.UseNpgsql(builder.Configuration["ConnectionStrings:Postgres"]));   
 // Add services to the container.
-
+builder.Services.AddSingleton<IHasher, Hasher>(_ => new Hasher(builder.Configuration["Salt"]));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(options =>  
 {  
     options.AddPolicy(name: "LocalCors",  
