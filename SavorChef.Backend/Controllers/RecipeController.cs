@@ -38,7 +38,7 @@ namespace SavorChef.Backend.Controllers
             var recipeEntity = _context.Recipes.Add(new RecipeEntity
             {
                 Name = recipeCreateRequestDto.Name,
-                Ingredients = recipeCreateRequestDto.Ingredients,
+                //Ingredients = recipeCreateRequestDto.Ingredients,
                 RecipeDescription = recipeCreateRequestDto.RecipeDescription,
                 PreparationInstructions = recipeCreateRequestDto.PreparationInstructions,
                 PreparationTime = recipeCreateRequestDto.PreparationTime,
@@ -52,7 +52,7 @@ namespace SavorChef.Backend.Controllers
             {
                 Id = recipeEntity.Entity.Id,
                 Name = recipeEntity.Entity.Name,
-                Ingredients = recipeEntity.Entity.Ingredients,
+             //   Ingredients = recipeEntity.Entity.Ingredients,
                 RecipeDescription = recipeEntity.Entity.RecipeDescription,
                 PreparationInstructions = recipeEntity.Entity.PreparationInstructions,
                 PreparationTime = recipeEntity.Entity.PreparationTime,
