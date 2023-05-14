@@ -38,7 +38,7 @@ builder.Services.AddCors(options =>
     //             .AllowAnyMethod();
     //     });  
 });
-builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddSingleton<IJWTService, JWTService>();
 //scoped transient
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using SavorChef.Backend.Data.Dtos;
 using SavorChef.Backend.Data.Entities;
+using SavorChef.Backend.Hash;
 using SavorChef.Backend.Repositories;
 using SavorChef.Backend.Services;
 
@@ -12,7 +13,8 @@ public class AuthorizationController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
     private readonly IJWTService _jwtService;
-
+    private readonly IHasher _hasher = new Hasher("salt_here");
+    
     public AuthorizationController(IUserRepository userRepository, IJWTService jwtService)
     {
         _userRepository = userRepository;
@@ -30,7 +32,7 @@ public class AuthorizationController : ControllerBase
             return new BadRequestResult();
         }
 
-        if (loginRequestDto.Password != user.Password)
+        if (_hasher.Hash(loginRequestDto.Password) != user.Password)
         {
             return new BadRequestResult();
         }
@@ -49,14 +51,15 @@ public class AuthorizationController : ControllerBase
             return new BadRequestResult();
         }
 
+        var hashedPassword = _hasher.Hash(registerRequestDto.Password);
         var user = new UserEntity
         {
             Email = registerRequestDto.Email,
-            Password = registerRequestDto.Password
+            Password = hashedPassword
         };
         var createdUser =_userRepository.CreateUser(user);
-        return new OkObjectResult(createdUser); 
-    }
+        return new OkResult(); 
+    }   
 
     [HttpPost]
     [Route("/refresh")]
