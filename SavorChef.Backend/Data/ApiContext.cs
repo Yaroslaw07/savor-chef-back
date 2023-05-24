@@ -26,5 +26,11 @@ public class ApiContext: DbContext
         modelBuilder.Entity<ProductEntity>()
             .HasMany(x => x.AssociatedRecipes)
             .WithMany(x => x.AssociatedProducts);
+
+        modelBuilder.Entity<RecipeEntity>()
+            .HasOne(e => e.UserEntity)
+            .WithMany(e => e.RecipesEntities)
+            .HasForeignKey(e => e.UserId)
+            .IsRequired();
     }
 }   

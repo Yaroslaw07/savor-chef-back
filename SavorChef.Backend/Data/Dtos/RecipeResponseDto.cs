@@ -12,4 +12,6 @@ public class RecipeResponseDto
     public string Difficulty { get; set; }=string.Empty;
     public string DishCategory { get; set; }=string.Empty;
     public List<ProductResponseDto> Products { get; set; } = new();
+    public int UserId { get; set; }
+    
 }

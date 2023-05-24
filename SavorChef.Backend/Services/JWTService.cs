@@ -2,7 +2,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using SavorChef.Backend.Data.Dtos;
 
 namespace SavorChef.Backend.Services;
@@ -69,4 +71,42 @@ public class JWTService : IJWTService
 
         return principal;
     }
+
+    public string? GetAccessTokenFromRequest(HttpRequest httpRequest)
+    {
+        var authorizationHeader = httpRequest.Headers[HeaderNames.Authorization];
+        if (authorizationHeader.Count == 0)
+        {
+            return null;
+        }
+
+        var bearer = authorizationHeader[0];
+        if (!bearer.Contains("Bearer "))
+        {
+            return null;
+        }
+
+        var accessToken = bearer.Replace("Bearer ", "");
+        return accessToken;
+    }
+    
+    public string? GetCallerEmailFromRequest(HttpRequest httpRequest)
+    {
+        var authorizationHeader = httpRequest.Headers[HeaderNames.Authorization];
+        if (authorizationHeader.Count == 0)
+        {
+            return null;
+        }
+
+        var bearer = authorizationHeader[0];
+        if (!bearer.Contains("Bearer "))
+        {
+            return null;
+        }
+
+        var accessToken = bearer.Replace("Bearer ", "");
+        var claimsPrincipal = GetClaimsPrincipalFromAccessToken(accessToken);
+        return claimsPrincipal.FindFirstValue("Email");
+    }
+
 }

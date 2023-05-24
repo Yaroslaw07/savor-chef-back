@@ -65,22 +65,8 @@ public class AuthorizationController : ControllerBase
     [Route("/refresh")]
     public IActionResult Refresh([FromBody] RefreshRequestDto refreshRequestDto)
     {
-        var authorizationHeader = Request.Headers[HeaderNames.Authorization];
-        if (authorizationHeader.Count == 0)
-        {
-            return new UnauthorizedObjectResult("Invalid token.");
-        }
-
-        var bearer = authorizationHeader[0];
-        if (!bearer.Contains("Bearer "))
-        {
-            return new UnauthorizedObjectResult("Invalid token.");
-        }
-
-        var accessToken = bearer.Replace("Bearer ", "");
-        var principal = _jwtService.GetClaimsPrincipalFromAccessToken(accessToken);
-        var email = principal.FindFirstValue("Email");
-
+        var email = _jwtService.GetCallerEmailFromRequest(Request);
+       
         if (email == null)
         {
             return new UnauthorizedObjectResult("Invalid token.");

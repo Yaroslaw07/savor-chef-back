@@ -13,5 +13,6 @@ public class RecipeCreateRequestDto
     public string Difficulty { get; set; }=string.Empty;
     public string DishCategory { get; set; }=string.Empty;
     
-    public List<int> AssociatedProductIds { get; set; } = new();  
+    public List<int> AssociatedProductIds { get; set; } = new(); 
+    
 }

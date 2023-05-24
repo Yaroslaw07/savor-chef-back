@@ -1,3 +1,5 @@
+using SavorChef.Backend.Migrations;
+
 namespace SavorChef.Backend.Data.Entities;
 
 public class RecipeEntity
@@ -13,10 +15,11 @@ public class RecipeEntity
     public string Difficulty { get; set; }=string.Empty;
     public string DishCategory { get; set; }=string.Empty;
     
-        
-
     // Add a navigation property for the associated ProductEntity.
     public ICollection<ProductEntity> AssociatedProducts { get; set; } = new List<ProductEntity>();
-
+    
+    
+    public int UserId { get; set; } 
+    public UserEntity UserEntity { get; set; }= null! ;
 
 }

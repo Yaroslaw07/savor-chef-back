@@ -2,31 +2,47 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SavorChef.Backend.Data;
 using SavorChef.Backend.Data.Dtos;
 using SavorChef.Backend.Data.Entities;
+using SavorChef.Backend.Services;
 
 namespace SavorChef.Backend.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class RecipeController : ControllerBase
     {
         private readonly ApiContext _context;
-
-        public RecipeController(ApiContext context)
+        private readonly IJWTService _jwtService;
+        public RecipeController(ApiContext context, IJWTService jwtService)
         {
             _context = context;
+            _jwtService = jwtService;
         }
 
         //Create
         [HttpPost]
         public IActionResult Create(RecipeCreateRequestDto recipeCreateRequestDto)
         {
-            var productEntities = new List<ProductEntity>();
+            var userEmail = _jwtService.GetCallerEmailFromRequest(Request);
 
+            if (userEmail == null)
+            {
+                return new BadRequestResult();
+            }
+
+            var user = _context.Users.FirstOrDefault(x => x.Email == userEmail);
+            if (user == null)
+            {
+                return new BadRequestResult();
+            }
+            var productEntities = new List<ProductEntity>();
+            
 
             foreach (var productId in recipeCreateRequestDto.AssociatedProductIds)
             {
@@ -35,7 +51,7 @@ namespace SavorChef.Backend.Controllers
                     productEntities.Add(productEntity);
             }
 
-            var recipeEntity = _context.Recipes.Add(new RecipeEntity
+            var recipeEntity = new RecipeEntity
             {
                 Name = recipeCreateRequestDto.Name,
                 //Ingredients = recipeCreateRequestDto.Ingredients,
@@ -44,26 +60,29 @@ namespace SavorChef.Backend.Controllers
                 PreparationTime = recipeCreateRequestDto.PreparationTime,
                 Difficulty = recipeCreateRequestDto.Difficulty,
                 DishCategory = recipeCreateRequestDto.DishCategory,
-                AssociatedProducts = productEntities
-            });
+                AssociatedProducts = productEntities,
+                UserId = user.Id
+            };
+            var test=_context.Recipes.Add(recipeEntity).Entity;
             
             _context.SaveChanges();
             var responseDto = new RecipeResponseDto
             {
-                Id = recipeEntity.Entity.Id,
-                Name = recipeEntity.Entity.Name,
-             //   Ingredients = recipeEntity.Entity.Ingredients,
-                RecipeDescription = recipeEntity.Entity.RecipeDescription,
-                PreparationInstructions = recipeEntity.Entity.PreparationInstructions,
-                PreparationTime = recipeEntity.Entity.PreparationTime,
-                Difficulty = recipeEntity.Entity.Difficulty,
-                DishCategory = recipeEntity.Entity.DishCategory,
-                Products = recipeEntity.Entity.AssociatedProducts.Select(x => new ProductResponseDto
+                Id = recipeEntity.Id,
+                Name = recipeEntity.Name,
+             //   Ingredients = recipeEntity.Ingredients,
+                RecipeDescription = recipeEntity.RecipeDescription,
+                PreparationInstructions = recipeEntity.PreparationInstructions,
+                PreparationTime = recipeEntity.PreparationTime,
+                Difficulty = recipeEntity.Difficulty,
+                DishCategory = recipeEntity.DishCategory,
+                Products = recipeEntity.AssociatedProducts.Select(x => new ProductResponseDto
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description
-                }).ToList()
+                }).ToList(),
+                UserId = recipeEntity.UserId
 
             };
             return new OkObjectResult(responseDto);
