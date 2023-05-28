@@ -22,4 +22,7 @@ public class RecipeEntity
     public int UserId { get; set; } 
     public UserEntity UserEntity { get; set; }= null! ;
 
+
+    public ICollection<UserEntity> AssociatedUserEntities { get; set; } = new List<UserEntity>();
+
 }

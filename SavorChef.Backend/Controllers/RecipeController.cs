@@ -14,7 +14,6 @@ namespace SavorChef.Backend.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
     public class RecipeController : ControllerBase
     {
         private readonly ApiContext _context;
@@ -26,6 +25,7 @@ namespace SavorChef.Backend.Controllers
         }
 
         //Create
+        [Authorize]
         [HttpPost]
         public IActionResult Create(RecipeCreateRequestDto recipeCreateRequestDto)
         {
@@ -89,6 +89,7 @@ namespace SavorChef.Backend.Controllers
         }
         
         //GET
+       
         [HttpGet]
         public IActionResult Get(int id)
         {
@@ -101,6 +102,7 @@ namespace SavorChef.Backend.Controllers
         }
         
         //DELETE
+        [Authorize]
         [HttpDelete]
         public IActionResult Delete(int id)
         {

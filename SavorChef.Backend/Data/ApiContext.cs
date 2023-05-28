@@ -3,9 +3,9 @@ using SavorChef.Backend.Data.Entities;
 namespace SavorChef.Backend.Data;
 using Microsoft.EntityFrameworkCore;
 
-public class ApiContext: DbContext
+public class ApiContext : DbContext
 {
-    
+
     public DbSet<RecipeEntity> Recipes { get; set; }
     public DbSet<ProductEntity> Products { get; set; }
     public DbSet<UserEntity> Users { get; set; }
@@ -22,15 +22,27 @@ public class ApiContext: DbContext
         modelBuilder.Entity<RecipeEntity>()
             .HasMany(x => x.AssociatedProducts)
             .WithMany(x => x.AssociatedRecipes);
-        
+
         modelBuilder.Entity<ProductEntity>()
             .HasMany(x => x.AssociatedRecipes)
             .WithMany(x => x.AssociatedProducts);
+
+
 
         modelBuilder.Entity<RecipeEntity>()
             .HasOne(e => e.UserEntity)
             .WithMany(e => e.RecipesEntities)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
+
+
+
+        modelBuilder.Entity<UserEntity>()
+            .HasMany(p => p.AssociatedRecipesEntities)
+            .WithMany(p => p.AssociatedUserEntities);
+
+        modelBuilder.Entity<RecipeEntity>()
+            .HasMany(p => p.AssociatedUserEntities)
+            .WithMany(p => p.AssociatedRecipesEntities);
     }
-}   
+}    
