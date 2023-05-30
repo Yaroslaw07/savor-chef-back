@@ -57,7 +57,7 @@ namespace SavorChef.Backend.Controllers
                 //Ingredients = recipeCreateRequestDto.Ingredients,
                 RecipeDescription = recipeCreateRequestDto.RecipeDescription,
                 PreparationInstructions = recipeCreateRequestDto.PreparationInstructions,
-                PreparationTime = recipeCreateRequestDto.PreparationTime,
+                PreparationTime = TimeSpan.Parse(recipeCreateRequestDto.PreparationTime),
                 Difficulty = recipeCreateRequestDto.Difficulty,
                 DishCategory = recipeCreateRequestDto.DishCategory,
                 AssociatedProducts = productEntities,

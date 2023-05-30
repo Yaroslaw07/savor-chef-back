@@ -1,5 +1,6 @@
  using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+ using System.Text.Json.Serialization;
+ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SavorChef.Backend.Repositories;
 using SavorChef.Backend.Services;
@@ -14,7 +15,10 @@ builder.Services.AddDbContext<ApiContext>
     (opt => opt.UseNpgsql(builder.Configuration["ConnectionStrings:Postgres"]));   
 // Add services to the container.
 builder.Services.AddSingleton<IHasher, Hasher>(_ => new Hasher(builder.Configuration["Salt"]));
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

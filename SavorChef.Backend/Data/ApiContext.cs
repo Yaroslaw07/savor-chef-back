@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SavorChef.Backend.Data.Entities;
+using SavorChef.Backend.Data.Enums;
 
 namespace SavorChef.Backend.Data;
 using Microsoft.EntityFrameworkCore;
@@ -44,5 +46,25 @@ public class ApiContext : DbContext
         modelBuilder.Entity<RecipeEntity>()
             .HasMany(p => p.AssociatedUserEntities)
             .WithMany(p => p.AssociatedRecipesEntities);
+
+
+        modelBuilder.Entity<RecipeEntity>()
+            .Property(x => x.Difficulty)
+            .HasConversion(new EnumToStringConverter<Difficulty>());
+
+
+        modelBuilder.Entity<UserEntity>()
+            .HasIndex(x => x.Email)
+            .IsUnique();
+
+
+        modelBuilder.Entity<UserEntity>()
+            .HasIndex(x => x.UserName)
+            .IsUnique();
+
+
+        modelBuilder.Entity<RecipeEntity>()
+            .Property(x => x.PreparationTime)
+            .HasConversion(x => x.ToString(), x => TimeSpan.Parse(x));
     }
 }    

@@ -90,7 +90,7 @@ public class JWTService : IJWTService
         return accessToken;
     }
     
-    public string? GetCallerEmailFromRequest(HttpRequest httpRequest)
+        public string? GetCallerEmailFromRequest(HttpRequest httpRequest)
     {
         var authorizationHeader = httpRequest.Headers[HeaderNames.Authorization];
         if (authorizationHeader.Count == 0)

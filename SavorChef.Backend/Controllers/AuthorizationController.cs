@@ -1,4 +1,4 @@
-using System.Security.Claims;
+    using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using SavorChef.Backend.Data.Dtos;
@@ -54,6 +54,7 @@ public class AuthorizationController : ControllerBase
         var hashedPassword = _hasher.Hash(registerRequestDto.Password);
         var user = new UserEntity
         {
+            UserName = registerRequestDto.UserName,
             Email = registerRequestDto.Email,
             Password = hashedPassword
         };
