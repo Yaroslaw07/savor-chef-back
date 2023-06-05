@@ -17,12 +17,8 @@ public class Hasher : IHasher
         using HashAlgorithm sha256 = SHA256.Create();
         var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input + _salt));
         var stringBuilder = new StringBuilder();
-        foreach (var b in bytes)
-        {
-            stringBuilder.Append(b.ToString("X2"));
-        }
+        foreach (var b in bytes) stringBuilder.Append(b.ToString("X2"));
 
         return stringBuilder.ToString();
     }
-
 }

@@ -3,7 +3,7 @@ using SavorChef.Backend.Data.Entities;
 
 namespace SavorChef.Backend.Repositories;
 
-public class UserRepository: IUserRepository
+public class UserRepository : IUserRepository
 {
     private readonly ApiContext _apiContext;
 
@@ -14,7 +14,7 @@ public class UserRepository: IUserRepository
 
     public UserEntity GetUser(string email)
     {
-        return _apiContext.Users.FirstOrDefault(x=>x.Email==email);
+        return _apiContext.Users.FirstOrDefault(x => x.Email == email);
     }
 
     public UserEntity CreateUser(UserEntity user)

@@ -1,22 +1,20 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SavorChef.Backend.Data.Entities;
 using SavorChef.Backend.Data.Enums;
 
 namespace SavorChef.Backend.Data;
-using Microsoft.EntityFrameworkCore;
 
 public class ApiContext : DbContext
 {
+    public ApiContext(DbContextOptions<ApiContext> options)
+        : base(options)
+    {
+    }
 
     public DbSet<RecipeEntity> Recipes { get; set; }
     public DbSet<ProductEntity> Products { get; set; }
     public DbSet<UserEntity> Users { get; set; }
-
-    public ApiContext(DbContextOptions<ApiContext> options)
-        : base(options)
-    {
-
-    }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,24 +28,36 @@ public class ApiContext : DbContext
             .WithMany(x => x.AssociatedProducts);
 
 
-
         modelBuilder.Entity<RecipeEntity>()
             .HasOne(e => e.UserEntity)
-            .WithMany(e => e.RecipesEntities)
+            .WithMany(e => e.CreatedRecipes)
             .HasForeignKey(e => e.UserId)
             .IsRequired();
 
 
-
         modelBuilder.Entity<UserEntity>()
-            .HasMany(p => p.AssociatedRecipesEntities)
-            .WithMany(p => p.AssociatedUserEntities);
+            .HasMany(p => p.FavoriteRecipes)
+            .WithMany(p => p.UsersThatAddedToFavorites)
+            .UsingEntity(
+                //l => l.HasOne(typeof(UserEntity)).WithMany().HasForeignKey("UserId"),
+                //  .HasPrincipalKey(nameof(UserEntity.Id)),
+               // r => r.HasOne(typeof(RecipeEntity)).WithMany().HasForeignKey("RecipeId"),
+                j=>
+                {
+                    j.Property("FavoriteRecipesId").HasColumnName("RecipeId");
+                    j.Property("UsersThatAddedToFavoritesId").HasColumnName("UserId");
+                    j.ToTable("FavoriteRecipes");
+                    
+                });
+                   // .HasPrincipalKey(nameof(RecipeEntity.Id)),
+         //       j => j.HasKey("UserId", "RecipeId"));
+        
+        // modelBuilder.Entity<RecipeEntity>()
+        //     .HasMany(p => p.UsersThatAddedToFavorites)
+        //     .WithMany(p => p.FavoriteRecipes);
 
-        modelBuilder.Entity<RecipeEntity>()
-            .HasMany(p => p.AssociatedUserEntities)
-            .WithMany(p => p.AssociatedRecipesEntities);
 
-
+        
         modelBuilder.Entity<RecipeEntity>()
             .Property(x => x.Difficulty)
             .HasConversion(new EnumToStringConverter<Difficulty>());
@@ -67,4 +77,4 @@ public class ApiContext : DbContext
             .Property(x => x.PreparationTime)
             .HasConversion(x => x.ToString(), x => TimeSpan.Parse(x));
     }
-}    
+}
