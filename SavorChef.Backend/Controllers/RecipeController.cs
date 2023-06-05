@@ -121,7 +121,7 @@ public class RecipeController : ControllerBase
         return new OkObjectResult(result.Select(x=>x.ToDto(userEmail)).ToList());
     }
 
-
+//AddToFavorite
     [HttpPost]
     [Authorize]
     [Route("AddToFavorites/{recipeId}")]
@@ -138,10 +138,35 @@ public class RecipeController : ControllerBase
 
         if (recipe == null) return new NotFoundResult();
 
+        if (user.FavoriteRecipes.Contains(recipe))
+        {
+            return new BadRequestResult();
+        }
         user.FavoriteRecipes.Add(recipe);
         _context.SaveChanges();
 
         return new OkResult();
     }
-    
+
+
+    [HttpPost]
+    [Authorize]
+    [Route("DeleteFromFavorites/{recipeId}")]
+    public IActionResult DeleteFromFavorites(int recipeId)
+    {
+        var userEmail = _jwtService.GetCallerEmailFromRequest(Request);
+        if (userEmail == null) return new BadRequestResult();
+
+        var user = _context.Users.Include(x => x.FavoriteRecipes).FirstOrDefault(x=>x.Email==userEmail);
+        if (user == null) return new BadRequestResult();
+
+        var recipe = _context.Recipes.Find(recipeId);
+        if (recipe == null) return new NotFoundResult();
+        
+        if (!user.FavoriteRecipes.Contains(recipe)) return new NotFoundResult();
+
+        user.FavoriteRecipes.Remove(recipe);
+        _context.SaveChanges();
+        return new OkResult();
+    }
 }
