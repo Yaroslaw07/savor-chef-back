@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SavorChef.Api.Data.Enums;
 using SavorChef.Domain.Entities;
+using SavorChef.Domain.Enums;
 
 namespace SavorChef.Domain.Configurations;
 
@@ -15,8 +15,8 @@ public class RecipeEntityConfiguration : IEntityTypeConfiguration<RecipeEntity>
             .HasConversion(x => x.ToString(), x => TimeSpan.Parse(x));
             
         // Configure the Enum to string conversion
-        builder.Property(x => x.Difficulty)
-            .HasConversion(new EnumToStringConverter<Difficulty>());
+        builder.Property(x => x.RecipeDifficulty)
+            .HasConversion(new EnumToStringConverter<RecipeDifficulty>());
             
         // Configure the many-to-many relationship with custom table name
         builder.HasMany(p => p.UsersThatAddedToFavorites)

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Http;
 using SavorChef.Application.Dtos.Responses;
 
 
-namespace SavorChef.Application.Services;
+namespace SavorChef.Application.Services.AuthService.Jwt;
 
-public interface IJWTService
+public interface IJwtService
 {
     public TokensResponseDto GetTokens(string email);
     public TokensResponseDto RefreshTokens(string refreshToken, string email);

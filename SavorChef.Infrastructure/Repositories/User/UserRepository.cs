@@ -8,13 +8,13 @@ namespace SavorChef.Infrastructure.Repositories.User;
     {
         private readonly DataContext _dataContext = dataContext;
 
-        public async Task<UserEntity> GetUserAsync(int id)
+        public async Task<UserEntity> GetByIdAsync(int id)
         {
             return await _dataContext.Users.SingleOrDefaultAsync(u => u.Id == id)
                    ?? throw UserExceptions.NotFound.ById(id);
         }
 
-        public async Task<UserEntity> CreateUserAsync(UserEntity user)
+        public async Task<UserEntity> CreateAsync(UserEntity user)
         {
             var userEntity = await _dataContext.Users.AddAsync(user);
 
@@ -30,9 +30,9 @@ namespace SavorChef.Infrastructure.Repositories.User;
             return userEntity?.Entity ?? throw UserExceptions.Create.Failed();
         }
 
-        public async Task<UserEntity> UpdateUserAsync(UserEntity user)
+        public async Task<UserEntity> UpdateAsync(UserEntity user)
         {
-            var result = await GetUserAsync(user.Id);
+            var result = await GetByIdAsync(user.Id);
 
             try
             {
@@ -47,9 +47,9 @@ namespace SavorChef.Infrastructure.Repositories.User;
             return result;
         }
 
-        public async Task DeleteUserAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            var result = await GetUserAsync(id);
+            var result = await GetByIdAsync(id);
 
             try
             {

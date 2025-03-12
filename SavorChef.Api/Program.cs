@@ -3,41 +3,23 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SavorChef.Api.Data;
-using SavorChef.Application.Hash;
-using SavorChef.Application.Services;
-using SavorChef.Infrastructure.Repositories.User;
+using SavorChef.API.Extensions;
+using SavorChef.Application.Services.AuthService.Hash;
+using SavorChef.Application.Services.AuthService.Jwt;
+using SavorChef.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json");
 
 builder.Services.AddDbContext<DataContext>
     (opt => opt.UseNpgsql(builder.Configuration["ConnectionStrings:Postgres"]));
-// Add services to the container.
-builder.Services.AddSingleton<IHasher, Hasher>(_ => new Hasher(builder.Configuration["Salt"]));
-builder.Services.AddControllers().AddJsonOptions(x =>
-{
-    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("LocalCors",
-        policy =>
-        {
-            policy
-                .AllowAnyOrigin() // .WithOrigins("http://localhost:3000", "https://localhost:3000")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-});
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<IJWTService, JWTService>();
+builder.Services.AddApplicationServices().
+                 AddRepositories().
+                 AddAutoMapperProfiles();
 
-//scoped transient
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -53,9 +35,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IHasher, Hasher>(_ => new Hasher(builder.Configuration["Salt"]));
+
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("LocalCors",
+        policy =>
+        {
+            policy
+                .AllowAnyOrigin() // .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -74,10 +78,10 @@ if (app.Environment.IsProduction())
     app.UseCors("ProductionCors");
 }
 
-// app.UseCors("ProductionCors");
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+

@@ -6,9 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using SavorChef.Application.Dtos.Responses;
 
-namespace SavorChef.Application.Services;
+namespace SavorChef.Application.Services.AuthService.Jwt;
 
-public class JWTService : IJWTService
+public class JwtService : IJwtService
 {
     private readonly Dictionary<string, string> _refreshTokens = new();
 

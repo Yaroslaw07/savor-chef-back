@@ -26,7 +26,7 @@ public class RecipeController : ControllerBase
     [Authorize]
     [HttpPost]
     [Route("Create")]
-    public IActionResult Create(RecipeCreateRequestDto recipeCreateRequestDto)
+    public IActionResult Create(RecipeRequestDto recipeRequestDto)
     {
         var userEmail = _jwtService.GetCallerEmailFromRequest(Request);
 
@@ -37,13 +37,13 @@ public class RecipeController : ControllerBase
 
         var recipeEntity = new RecipeEntity
         {
-            Name = recipeCreateRequestDto.Name,
-            //Ingredients = recipeCreateRequestDto.Ingredients,
-            RecipeDescription = recipeCreateRequestDto.RecipeDescription,
-            PreparationInstructions = recipeCreateRequestDto.PreparationInstructions,
-            PreparationTime = TimeSpan.Parse(recipeCreateRequestDto.PreparationTime),
-            Difficulty = recipeCreateRequestDto.Difficulty,
-            DishCategory = recipeCreateRequestDto.DishCategory,
+            Name = recipeRequestDto.Name,
+            //Ingredients = recipeRequestDto.Ingredients,
+            RecipeDescription = recipeRequestDto.RecipeDescription,
+            PreparationInstructions = recipeRequestDto.PreparationInstructions,
+            PreparationTime = TimeSpan.Parse(recipeRequestDto.PreparationTime),
+            Difficulty = recipeRequestDto.RecipeDifficulty,
+            DishCategory = recipeRequestDto.DishCategory,
             UserId = user.Id
         };
         var test = _context.Recipes.Add(recipeEntity).Entity;
@@ -57,7 +57,7 @@ public class RecipeController : ControllerBase
             RecipeDescription = recipeEntity.RecipeDescription,
             PreparationInstructions = recipeEntity.PreparationInstructions,
             PreparationTime = recipeEntity.PreparationTime,
-            Difficulty = recipeEntity.Difficulty,
+            RecipeDifficulty = recipeEntity.Difficulty,
             DishCategory = recipeEntity.DishCategory,
             CreatedByUserId = recipeEntity.UserId
         };

@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SavorChef.Application.Hash;
+namespace SavorChef.Application.Services.AuthService.Hash;
 
 public class Hasher : IHasher
 {

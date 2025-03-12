@@ -1,23 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-using SavorChef.Api.Data.Dtos;
-using SavorChef.Api.Hash;
-using SavorChef.Api.Repositories;
-using SavorChef.Api.Services;
 using SavorChef.Application.Dtos.Requests;
 using SavorChef.Application.Dtos.Responses;
-using SavorChef.Application.Hash;
-using SavorChef.Application.Services;
-using SavorChef.Backend.Data.Entities;
+using SavorChef.Application.Services.Hash;
+using SavorChef.Application.Services.Jwt;
+using SavorChef.Domain.Entities;
+using SavorChef.Infrastructure.Repositories.User;
 
 namespace SavorChef.Api.Controllers;
 
 public class AuthorizationController : ControllerBase
 {
     private readonly IHasher _hasher = new Hasher("salt_here");
-    private readonly IJWTService _jwtService;
+    private readonly IJwtService _jwtService;
     private readonly IUserRepository _userRepository;
 
-    public AuthorizationController(IUserRepository userRepository, IJWTService jwtService)
+    public AuthorizationController(IUserRepository userRepository, IJwtService jwtService)
     {
         _userRepository = userRepository;
         _jwtService = jwtService;

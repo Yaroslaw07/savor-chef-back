@@ -1,8 +1,9 @@
-using SavorChef.Api.Data.Enums;
+
+using SavorChef.Domain.Enums;
 
 namespace SavorChef.Application.Dtos.Requests;
 
-public class RecipeCreateRequestDto
+public class RecipeRequestDto
 {
     public string Name { get; set; } = string.Empty; //the name of the dish that will be displayed on the website.
 
@@ -16,8 +17,6 @@ public class RecipeCreateRequestDto
 
     //[Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]
 
-    public Difficulty Difficulty { get; set; }
+    public RecipeDifficulty RecipeDifficulty { get; set; }
     public string DishCategory { get; set; } = string.Empty;
-
-    public List<int> AssociatedProductIds { get; set; } = new();
 }

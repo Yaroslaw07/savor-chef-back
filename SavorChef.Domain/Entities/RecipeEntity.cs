@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SavorChef.Api.Data.Enums;
+using SavorChef.Domain.Enums;
 
 namespace SavorChef.Domain.Entities;
 
@@ -14,7 +14,7 @@ public class RecipeEntity
     public string RecipeDescription { get; set; } = string.Empty;
     public string PreparationInstructions { get; set; } = string.Empty;
     public TimeSpan PreparationTime { get; set; }
-    public Difficulty Difficulty { get; set; }
+    public RecipeDifficulty RecipeDifficulty { get; set; }
     public string DishCategory { get; set; } = string.Empty;
     
     [Required]

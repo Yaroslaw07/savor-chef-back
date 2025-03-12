@@ -11,6 +11,7 @@ public class DomainException(string code, string message, Exception? innerExcept
         /// <summary>
         /// Sets the SerializationInfo with information about the exception
         /// </summary>
+        [ObsoleteAttribute]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Code", Code);

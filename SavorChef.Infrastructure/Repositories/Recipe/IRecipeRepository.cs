@@ -5,13 +5,13 @@ namespace SavorChef.Infrastructure.Repositories.Recipe;
 
 public interface IRecipeRepository
 {
-    public Task<RecipeEntity> GetRecipeAsync(int id);
+    public Task<RecipeEntity> GetByIdAsync(int id);
     
-    public Task<ICollection<RecipeEntity>> GetRecipesAsync();
+    public Task<ICollection<RecipeEntity>> GetAllAsync();
 
-    public Task<RecipeEntity> CreateRecipeAsync(RecipeEntity recipe);
+    public Task<RecipeEntity> CreateAsync(RecipeEntity recipe);
     
-    public Task<RecipeEntity> UpdateRecipeAsync(RecipeEntity recipe);
+    public Task<RecipeEntity> UpdateAsync(RecipeEntity recipe);
     
-    public Task DeleteRecipeAsync(int id);
+    public Task DeleteAsync(int id);
 }

@@ -1,4 +1,4 @@
-namespace SavorChef.Application.Hash;
+namespace SavorChef.Application.Services.AuthService.Hash;
 
 public interface IHasher
 {

@@ -8,18 +8,18 @@ public class RecipeRepository(DataContext dataContext) : IRecipeRepository
 {
     private readonly DataContext _dataContext = dataContext;
     
-    public async Task<RecipeEntity> GetRecipeAsync(int id)
+    public async Task<RecipeEntity> GetByIdAsync(int id)
     {
         return await _dataContext.Recipes.SingleOrDefaultAsync(r => r.Id == id)
                ?? throw RecipeExceptions.NotFound.ById(id);
     }
 
-    public async Task<ICollection<RecipeEntity>> GetRecipesAsync()
+    public async Task<ICollection<RecipeEntity>> GetAllAsync()
     {
         return await _dataContext.Recipes.ToListAsync();
     }
     
-    public async Task<RecipeEntity> CreateRecipeAsync(RecipeEntity recipe)
+    public async Task<RecipeEntity> CreateAsync(RecipeEntity recipe)
     {
         var recipeEntity = await _dataContext.Recipes.AddAsync(recipe);
 
@@ -35,9 +35,9 @@ public class RecipeRepository(DataContext dataContext) : IRecipeRepository
         return recipeEntity?.Entity ?? throw RecipeExceptions.Create.Failed();
     }
     
-    public async Task<RecipeEntity> UpdateRecipeAsync(RecipeEntity recipe)
+    public async Task<RecipeEntity> UpdateAsync(RecipeEntity recipe)
     {
-        var result = await GetRecipeAsync(recipe.Id);
+        var result = await GetByIdAsync(recipe.Id);
 
         try
         {
@@ -52,9 +52,9 @@ public class RecipeRepository(DataContext dataContext) : IRecipeRepository
         return result;
     }
     
-    public async Task DeleteRecipeAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        var result = await GetRecipeAsync(id);
+        var result = await GetByIdAsync(id);
 
         try
         {
