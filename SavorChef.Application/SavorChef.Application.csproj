@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.13" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.IdentityModel.Tokens">
+        <HintPath>..\..\..\..\.nuget\packages\microsoft.identitymodel.tokens\6.28.0\lib\net6.0\Microsoft.IdentityModel.Tokens.dll</HintPath>
+      </Reference>
+      <Reference Include="System.IdentityModel.Tokens.Jwt">
+        <HintPath>..\..\..\..\.nuget\packages\system.identitymodel.tokens.jwt\6.28.0\lib\net6.0\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SavorChef.Domain\SavorChef.Domain.csproj" />
+      <ProjectReference Include="..\SavorChef.Infrastructure\SavorChef.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,69 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
 using SavorChef.Application.Dtos.Requests;
 using SavorChef.Application.Dtos.Responses;
-using SavorChef.Application.Services.Hash;
-using SavorChef.Application.Services.Jwt;
-using SavorChef.Domain.Entities;
-using SavorChef.Infrastructure.Repositories.User;
+using SavorChef.Application.Services.AuthService;
 
 namespace SavorChef.Api.Controllers;
 
 public class AuthorizationController : ControllerBase
 {
-    private readonly IHasher _hasher = new Hasher("salt_here");
-    private readonly IJwtService _jwtService;
-    private readonly IUserRepository _userRepository;
+    private readonly IAuthService _authService;
 
-    public AuthorizationController(IUserRepository userRepository, IJwtService jwtService)
+    public AuthorizationController(IAuthService authService)
     {
-        _userRepository = userRepository;
-        _jwtService = jwtService;
+        _authService = authService;
     }
 
     [HttpPost]
     [Route("/signin")]
-    public IActionResult SignIn([FromBody] LoginRequestDto loginRequestDto)
+    public async Task<IActionResult> SignIn([FromBody] LoginRequestDto loginRequestDto)
     {
-        // TO DO: var user = _userRepository.GetUserA(loginRequestDto.Email);
-
-        if (user == null) return new BadRequestResult();
-
-        if (_hasher.Hash(loginRequestDto.Password) != user.Password) return new BadRequestResult();
-
-        var response = _jwtService.GetTokens(user.Email);
-
+        var response = await _authService.SignInAsync(loginRequestDto);
+        
         return new OkObjectResult(response);
     }
 
     [HttpPost]
     [Route("/signup")]
-    public IActionResult SignUp([FromBody] RegisterRequestDto registerRequestDto)
+    public async Task<IActionResult> SignUp([FromBody] RegisterRequestDto registerRequestDto)
     {
-        if (_userRepository.GetUser(registerRequestDto.Email) != null) return new BadRequestResult();
+        var response = await _authService.SignUpAsync(registerRequestDto);
 
-        var hashedPassword = _hasher.Hash(registerRequestDto.Password);
-        var user = new UserEntity
-        {
-            UserName = registerRequestDto.UserName,
-            Email = registerRequestDto.Email,
-            Password = hashedPassword
-        };
-        var createdUser = _userRepository.CreateUser(user);
-        return new OkResult();
+        return new OkObjectResult(response);
     }
 
     [HttpPost]
     [Route("/refresh")]
-    public IActionResult Refresh([FromBody] RefreshRequestDto refreshRequestDto)
+    public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto refreshRequestDto)
     {
-        var email = _jwtService.GetCallerEmailFromRequest(Request);
+        var response = await _authService.RefreshTokenAsync(refreshRequestDto);
 
-        if (email == null) return new UnauthorizedObjectResult("Invalid token.");
-
-        var tokensResponseDto = _jwtService.RefreshTokens(refreshRequestDto.RefreshToken, email);
-
-        if (tokensResponseDto == null) return new UnauthorizedObjectResult("Invalid token.");
-
-        return new OkObjectResult(tokensResponseDto);
+        return new OkObjectResult(response);
     }
 }

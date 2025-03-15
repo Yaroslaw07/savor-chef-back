@@ -13,6 +13,12 @@ namespace SavorChef.Infrastructure.Repositories.User;
             return await _dataContext.Users.SingleOrDefaultAsync(u => u.Id == id)
                    ?? throw UserExceptions.NotFound.ById(id);
         }
+        
+        public async Task<UserEntity> GetByEmailAsync(string email)
+        {
+            return await _dataContext.Users.SingleOrDefaultAsync(u => u.Email == email)
+                   ?? throw UserExceptions.NotFound.ByEmail(email);
+        }
 
         public async Task<UserEntity> CreateAsync(UserEntity user)
         {
